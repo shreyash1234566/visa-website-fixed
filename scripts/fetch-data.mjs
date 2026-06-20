@@ -17,16 +17,60 @@ async function fetchVisaBulletin() {
   console.log('Fetching Visa Bulletin data...');
   // For this Phase 1 build, we inject reliable sample data mapped exactly to the required schema
   // since state.gov parsing can be brittle depending on HTML structure.
-  const mockData = [
-    { month: '2026-06', category: 'EB-1', country: 'India', finalActionDate: '2022-03-01', dateForFiling: '2022-04-01' },
-    { month: '2026-06', category: 'EB-2', country: 'India', finalActionDate: '2012-04-15', dateForFiling: '2012-05-15' },
-    { month: '2026-06', category: 'EB-3', country: 'India', finalActionDate: '2012-08-15', dateForFiling: '2012-09-01' },
-    { month: '2026-06', category: 'EB-1', country: 'China', finalActionDate: '2022-09-01', dateForFiling: '2023-01-01' },
-    { month: '2026-06', category: 'EB-2', country: 'China', finalActionDate: '2020-02-01', dateForFiling: '2020-06-01' },
-    { month: '2026-06', category: 'EB-3', country: 'China', finalActionDate: '2020-09-01', dateForFiling: '2021-07-01' },
-    { month: '2026-05', category: 'EB-2', country: 'India', finalActionDate: '2012-04-15', dateForFiling: '2012-05-15' },
-    { month: '2026-04', category: 'EB-2', country: 'India', finalActionDate: '2012-03-01', dateForFiling: '2012-04-01' },
+  // Generate 3 months of history for each category
+  const categoriesToGenerate = [
+    { category: 'EB-1', country: 'India', baseFAD: '2021-03-01', baseDFF: '2021-04-01' },
+    { category: 'EB-2', country: 'India', baseFAD: '2012-06-15', baseDFF: '2012-07-08' },
+    { category: 'EB-3', country: 'India', baseFAD: '2012-09-22', baseDFF: '2012-10-01' },
+    { category: 'EB-1', country: 'China', baseFAD: '2022-09-01', baseDFF: '2023-01-01' },
+    { category: 'EB-2', country: 'China', baseFAD: '2020-02-01', baseDFF: '2020-06-01' },
+    { category: 'EB-3', country: 'China', baseFAD: '2020-09-01', baseDFF: '2021-07-01' },
   ];
+
+  const mockData = [];
+
+  for (const cat of categoriesToGenerate) {
+    // Month 1 (June 2026 - Latest)
+    mockData.push({
+      month: '2026-06',
+      category: cat.category,
+      country: cat.country,
+      finalActionDate: cat.baseFAD,
+      dateForFiling: cat.baseDFF
+    });
+
+    // Month 2 (May 2026 - 1 month ago)
+    const fadDate = new Date(cat.baseFAD);
+    fadDate.setMonth(fadDate.getMonth() - 1); // move back 1 month
+    const mayFAD = fadDate.toISOString().split('T')[0];
+
+    const dffDate = new Date(cat.baseDFF);
+    dffDate.setMonth(dffDate.getMonth() - 1);
+    const mayDFF = dffDate.toISOString().split('T')[0];
+
+    mockData.push({
+      month: '2026-05',
+      category: cat.category,
+      country: cat.country,
+      finalActionDate: mayFAD,
+      dateForFiling: mayDFF
+    });
+
+    // Month 3 (April 2026 - 2 months ago)
+    fadDate.setMonth(fadDate.getMonth() - 1); // move back another month
+    const aprFAD = fadDate.toISOString().split('T')[0];
+
+    dffDate.setMonth(dffDate.getMonth() - 1);
+    const aprDFF = dffDate.toISOString().split('T')[0];
+
+    mockData.push({
+      month: '2026-04',
+      category: cat.category,
+      country: cat.country,
+      finalActionDate: aprFAD,
+      dateForFiling: aprDFF
+    });
+  }
 
   mockData.forEach(entry => {
     const filename = `${entry.month}-${entry.category}-${entry.country}.json`.replace(/\s+/g, '-').toLowerCase();

@@ -3,10 +3,10 @@
   "formName": "Adjustment of Status",
   "fiscalYear": 2025,
   "quarter": 4,
-  "receipts": 160914,
-  "completions": 137645,
+  "receipts": 168376,
+  "completions": 141552,
   "pending": 360000,
-  "rfeRate": 23,
+  "rfeRate": 11,
   "sourceUrl": "https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data",
-  "lastUpdated": "2026-06-20T10:09:58.994Z"
+  "lastUpdated": "2026-06-20T10:30:56.483Z"
 }
