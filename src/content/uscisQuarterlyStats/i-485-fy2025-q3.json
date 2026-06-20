@@ -1,0 +1,12 @@
+{
+  "formType": "I-485",
+  "formName": "Adjustment of Status",
+  "fiscalYear": 2025,
+  "quarter": 3,
+  "receipts": 140382,
+  "completions": 135611,
+  "pending": 360000,
+  "rfeRate": 22,
+  "sourceUrl": "https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data",
+  "lastUpdated": "2026-06-20T10:09:58.993Z"
+}

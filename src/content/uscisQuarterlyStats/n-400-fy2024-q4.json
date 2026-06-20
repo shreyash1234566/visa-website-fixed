@@ -1,0 +1,12 @@
+{
+  "formType": "N-400",
+  "formName": "Application for Naturalization",
+  "fiscalYear": 2024,
+  "quarter": 4,
+  "receipts": 235910,
+  "completions": 206103,
+  "pending": 660000,
+  "rfeRate": 13,
+  "sourceUrl": "https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data",
+  "lastUpdated": "2026-06-20T10:09:58.997Z"
+}

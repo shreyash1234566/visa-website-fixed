@@ -1,0 +1,12 @@
+{
+  "formType": "I-140",
+  "formName": "Immigrant Petition for Alien Worker",
+  "fiscalYear": 2024,
+  "quarter": 1,
+  "receipts": 91176,
+  "completions": 87168,
+  "pending": 264000,
+  "rfeRate": 25,
+  "sourceUrl": "https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data",
+  "lastUpdated": "2026-06-20T10:09:58.986Z"
+}

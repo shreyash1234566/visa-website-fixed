@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const visaBulletinData = await getCollection('visaBulletin');
+
+// Find the latest month
+const months = [...new Set(visaBulletinData.map(d => d.data.month))].sort().reverse();
+const currentMonth = months[0] || "No data";
+
+const currentData = visaBulletinData.filter(d => d.data.month === currentMonth);
+
+// Format month (e.g. "2026-06" to "June 2026")
+const formattedMonth = currentMonth !== "No data" 
+  ? new Date(`${currentMonth}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  : currentMonth;
+
+// Separate Employment and Family (Assuming EB for Employment)
+const ebData = currentData.filter(d => d.data.category.startsWith('EB'));
+---
+
+<Layout title="Visa Bulletin Tracker" description="Track the latest Visa Bulletin movement, Final Action Dates, and Dates for Filing for Employment and Family-based green cards.">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-4">Visa Bulletin Tracker</h1>
+    <p class="text-lg text-neutral-500 mb-8">Track priority dates and movements for Employment-Based green cards.</p>
+
+    <!-- Priority Date Estimator Banner -->
+    <a href="/green-card/priority-date-calculator" class="block bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-12 hover:bg-emerald-100 hover:shadow-sm transition-all group">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+          <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-emerald-900 mb-1 flex items-center gap-2">
+            Priority Date Estimator
+            <span class="bg-emerald-200 text-emerald-800 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded">New Tool</span>
+          </h3>
+          <p class="text-sm text-emerald-700">Calculate an estimated wait time for your priority date to become current based on recent bulletin movement. <span class="font-medium group-hover:underline">Try it now &rarr;</span></p>
+        </div>
+      </div>
+    </a>
+
+    <h2 class="text-2xl font-bold tracking-tight text-neutral-900 mb-6">{formattedMonth}</h2>
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden mb-12">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200 text-sm">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider">Category</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider">Country</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider">Final Action Date</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider">Date for Filing</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            {ebData.map(entry => {
+              const { category, country, finalActionDate, dateForFiling } = entry.data;
+              return (
+                <tr class="hover:bg-neutral-50/50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap font-medium text-neutral-900">{category}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-neutral-500">{country}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${finalActionDate === 'C' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                      {finalActionDate === 'C' ? 'Current' : finalActionDate}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${dateForFiling === 'C' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                      {dateForFiling === 'C' ? 'Current' : dateForFiling}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+            {ebData.length === 0 && (
+              <tr>
+                <td colspan="4" class="px-6 py-4 text-center text-sm text-neutral-500">No data available for this month.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</Layout>
