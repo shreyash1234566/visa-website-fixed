@@ -20,10 +20,15 @@ export async function getCurrentUser(request: Request, env: Env) {
 }
 
 export function jsonResponse(data: unknown, init: ResponseInit = {}) {
-  return new Response(JSON.stringify(data), {
-    ...init,
-    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },
-  });
+  const merged = new Headers({ 'Content-Type': 'application/json' });
+  if (init.headers) {
+    // init.headers may be a Headers instance, a plain object, or an array of
+    // [key, value] pairs.  `new Headers(x)` normalises all three forms so we
+    // can safely iterate with forEach.
+    const src = init.headers instanceof Headers ? init.headers : new Headers(init.headers as HeadersInit);
+    src.forEach((value, key) => merged.append(key, value));
+  }
+  return new Response(JSON.stringify(data), { ...init, headers: merged });
 }
 
 /**
