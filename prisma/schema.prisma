@@ -10,6 +10,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  runtime  = "cloudflare"
 }
 
 datasource db {
