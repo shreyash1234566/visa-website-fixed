@@ -105,6 +105,20 @@ const historicalData = bulletinData.map(b => ({
   const resultsSection = document.getElementById('results-section') as HTMLElement;
   const waitTimeEl = document.getElementById('wait-time') as HTMLElement;
   const targetDateEl = document.getElementById('target-date') as HTMLElement;
+
+  // Preselect country if linked from a Visa Bulletin country page (?country=india)
+  const params = new URLSearchParams(window.location.search);
+  const countryParam = params.get('country');
+  if (countryParam) {
+    const countrySelect = document.getElementById('country') as HTMLSelectElement;
+    const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    for (const opt of Array.from(countrySelect.options)) {
+      if (slugify(opt.value) === countryParam || slugify(opt.value).includes(countryParam)) {
+        countrySelect.value = opt.value;
+        break;
+      }
+    }
+  }
   
   // Parse injected JSON data
   const rawData = document.getElementById('bulletin-data')?.textContent || "[]";
