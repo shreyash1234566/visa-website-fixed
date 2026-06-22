@@ -12,6 +12,9 @@ export default defineConfig({
   site: 'https://usvisatracker.example.com',
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: true,
+    },
   },
 
   integrations: [
