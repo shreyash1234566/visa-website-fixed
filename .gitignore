@@ -26,3 +26,6 @@ pnpm-debug.log*
 # Cloudflare Pages Functions local secrets
 .dev.vars
 .wrangler/
+
+
+lca-data.csv
