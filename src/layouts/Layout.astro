@@ -4,9 +4,22 @@ import '../styles/global.css';
 interface Props {
 	title: string;
 	description?: string;
+	breadcrumbs?: { label: string; href: string }[];
+	noindex?: boolean;
 }
 
-const { title, description = "Track US Visa & Immigration Processing Times." } = Astro.props;
+const { title, description = "Track US Visa & Immigration Processing Times.", breadcrumbs, noindex = false } = Astro.props;
+
+const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbs.map((b, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: b.label,
+    item: b.href.startsWith('http') ? b.href : `https://usvisatracker.example.com${b.href}`
+  }))
+} : null;
 ---
 
 <!doctype html>
@@ -17,6 +30,7 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		{noindex && <meta name="robots" content="noindex,nofollow" />}
 		<title>{title}</title>
 		
 		<!-- Open Graph / Social Meta Tags -->
@@ -24,6 +38,11 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://usvisatracker.example.com/" />
+		
+		<!-- BreadcrumbList Schema (when breadcrumbs provided) -->
+		{breadcrumbSchema && (
+			<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+		)}
 		
 		<!-- Google Analytics Placeholder -->
 		<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -122,6 +141,7 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 					<ul class="space-y-2 text-sm text-neutral-500">
 						<li><a href="/green-card/visa-bulletin/india" class="hover:text-neutral-900">Visa Bulletin — India</a></li>
 						<li><a href="/green-card/visa-bulletin/china" class="hover:text-neutral-900">Visa Bulletin — China</a></li>
+						<li><a href="/green-card/marriage-gc-timeline" class="hover:text-neutral-900">Marriage GC Timeline</a></li>
 						<li><a href="/green-card/queue-calculator" class="hover:text-neutral-900">Queue Calculator</a></li>
 						<li><a href="/green-card/retrogression-tracker" class="hover:text-neutral-900">Retrogression Tracker</a></li>
 						<li><a href="/green-card/dos-predictions" class="hover:text-neutral-900">DOS Predictions</a></li>
@@ -133,6 +153,8 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 					<ul class="space-y-2 text-sm text-neutral-500">
 						<li><a href="/h1b" class="hover:text-neutral-900">H1B Sponsor DB</a></li>
 						<li><a href="/tools/h1b-lottery-calculator" class="hover:text-neutral-900">Lottery Calculator</a></li>
+						<li><a href="/tools/cap-gap-calculator" class="hover:text-neutral-900">F-1 Cap-Gap Calculator</a></li>
+						<li><a href="/tools/h4-ead-extension-checker" class="hover:text-neutral-900">H4 EAD Checker</a></li>
 						<li><a href="/tools/receipt-number-decoder" class="hover:text-neutral-900">Receipt Decoder</a></li>
 						<li><a href="/tools/uscis-phone-calculator" class="hover:text-neutral-900">Phone Navigator</a></li>
 						<li><a href="/green-card/visa-bulletin/hidden-checker" class="hover:text-neutral-900">Hidden Bulletin</a></li>
