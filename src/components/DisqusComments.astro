@@ -47,8 +47,7 @@ const identifier = pageIdentifier || Astro.url.pathname;
     (d.head || d.body).appendChild(s);
   }
 
-  // Use Astro's page-load event so this runs on every page transition
-  document.addEventListener('astro:page-load', () => {
+  function initDisqus() {
     var el = document.getElementById('disqus_thread');
     if (!el) return;
     
@@ -61,7 +60,13 @@ const identifier = pageIdentifier || Astro.url.pathname;
     }, { rootMargin: '200px' });
     
     observer.observe(el);
-  }, { once: true });
+  }
+
+  // Run immediately for standard page loads
+  initDisqus();
+
+  // Run on subsequent loads if Astro View Transitions are ever enabled
+  document.addEventListener('astro:page-load', initDisqus);
 </script>
 
 <noscript>
